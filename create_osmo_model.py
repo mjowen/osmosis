@@ -31,13 +31,24 @@ else:
 
 # Add in osmosis module
 code = model.code()
-osmo_code = code + f"""[osmosis]
+if initial_missing > 0:
+    component = f"""[osmosis]
 intra = {' + '.join(intra)}
 extra = {' + '.join(extra)}
 missing_conc = extra - intra
 init_missing = {initial_missing}
 steady_vol = (init_missing + intra)/extra
 """
+else:
+    component = f"""[osmosis]
+intra = {' + '.join(intra)}
+extra = {' + '.join(extra)}
+missing_conc = extra - intra
+init_missing = {initial_missing}
+steady_vol = intra/(extra-init_missing)
+"""
+
+osmo_code = code + component
 
 osmo_model = myokit.parse_model(osmo_code)
 myokit.save(f'{filename}_osmo.mmt', osmo_model)
