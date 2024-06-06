@@ -16,8 +16,7 @@ myokit.save(filename=f'{filename}.mmt', model=model)
 
 # List of concentrations
 intra = [f'intracellular_{a}_concentration.{b}' for a, b in
-         [('sodium', 'Nai'), ('calcium', 'Cai'), ('calcium', 'Ca_up'), ('calcium', 'Ca_rel'), ('calcium', 'p'),
-          ('potassium', 'Ki')]]
+         [('sodium', 'Nai'), ('calcium', 'Cai'), ('potassium', 'Ki')]]
 extra = ['extracellular_potassium_concentration.Kc']
 
 # Calculate initial osmolarity
