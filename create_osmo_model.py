@@ -2,7 +2,7 @@ import myokit
 import numpy as np
 
 # Declarations
-filename = 'difrancesco_noble_1985'
+filename = 'models/difrancesco_noble_1985'
 
 # Import cellml file
 i = myokit.formats.importer('cellml')

@@ -262,7 +262,7 @@ extra = extracellular_potassium_concentration.Kc
 init_missing = -148.00005
 intra = intracellular_sodium_concentration.Nai + intracellular_calcium_concentration.Cai + intracellular_calcium_concentration.Ca_up + intracellular_calcium_concentration.Ca_rel + intracellular_calcium_concentration.p + intracellular_potassium_concentration.Ki
 missing_conc = extra - intra
-steady_vol = (init_missing + intra) / extra
+steady_vol = intra / (extra - init_missing)
 
 [second_inward_current]
 P_si = 15 [m^3*A/mol (1e-09)]
