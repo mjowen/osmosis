@@ -8,6 +8,9 @@ filename = 'difrancesco_noble_1985'
 i = myokit.formats.importer('cellml')
 model = i.model(f'{filename}.cellml')
 
+# Add bindings
+model.var('membrane.i_pulse').set_binding('pace')
+
 # Save as .mmt file
 myokit.save(filename=f'{filename}.mmt', model=model)
 
