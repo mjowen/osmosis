@@ -65,6 +65,9 @@ labels = intra+extra+['osmosis.missing_conc']
 for i in labels:
     if i not in log.keys():
         log[i] = [model.get(i).value()]*len(log.time())
+# Extracellular ions should appear as negative
+for i in extra:
+    log[i] = -1*np.array(log[i])
 labels = [i.split('.')[-1] for i in labels]
 plt.figure(figsize=figsize, layout='tight')
 myokit.lib.plots.cumulative_current(log, intra+extra+['osmosis.missing_conc'], labels=labels, line_args={'lw': 0})
