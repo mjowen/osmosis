@@ -5,11 +5,14 @@ import myokit.lib.plots
 import myokit.lib.guess
 
 # Declarations
-filename = 'models/difrancesco_noble_1985'
+filename = 'models/ToRORd_dynCl_mid'
 figsize = (6, 4)
 
 model = myokit.load_model(f'{filename}_osmo.mmt')
-protocol = None  # Sino-atrial model so no pacing needed
+if 'difrancesco_noble' in filename:
+    protocol = None  # Sino-atrial model so no pacing needed
+else:
+    protocol = myokit.pacing.blocktrain(1000, 1)
 
 sim = myokit.Simulation(model, protocol=protocol)
 log = sim.run(5)  # Time in units of s not ms

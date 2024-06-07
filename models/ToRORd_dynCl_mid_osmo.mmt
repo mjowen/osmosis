@@ -4,16 +4,16 @@ name: ToRORd_dyn_chloride
 # Initial values
 membrane.v               = -91.33918
 CaMK.CaMKt               = 0.0201882
-intracellular_ions.nai   = initial_ions.nai
-intracellular_ions.nass  = initial_ions.nass
-intracellular_ions.ki    = initial_ions.ki
-intracellular_ions.kss   = initial_ions.kss
-intracellular_ions.cass  = initial_ions.cass
-intracellular_ions.cansr = initial_ions.cansr
-intracellular_ions.cajsr = initial_ions.cajsr
-intracellular_ions.cai   = initial_ions.cai
-intracellular_ions.cli   = initial_ions.cli
-intracellular_ions.clss  = initial_ions.clss
+intracellular_ions.nai   = 15.94867
+intracellular_ions.nass  = 15.94922
+intracellular_ions.ki    = 156.7131
+intracellular_ions.kss   = 156.713
+intracellular_ions.cass  =  6.64218699999999997e-5
+intracellular_ions.cansr = 2.012225
+intracellular_ions.cajsr = 2.016415
+intracellular_ions.cai   =  8.29757599999999965e-5
+intracellular_ions.cli   = 48.91277
+intracellular_ions.clss  = 48.91274
 INa.m                    =  4.61956499999999974e-4
 INa.h                    = 0.8739077
 INa.j                    = 0.8737841
@@ -28,7 +28,7 @@ Ito.iS                   = 0.5702538
 Ito.ap                   =  4.07277700000000019e-4
 Ito.iFp                  = 0.9997514
 Ito.iSp                  = 0.6351927
-ICaL.d                   = -8.33460399999999997e-30
+ICaL.d                   = - 8.33460399999999997e-30
 ICaL.ff                  = 1
 ICaL.fs                  = 0.9183587
 ICaL.fcaf                = 1
@@ -45,8 +45,8 @@ IKr.I                    =  1.06422999999999997e-5
 IKr.O                    =  3.44573299999999976e-4
 IKs.xs1                  = 0.2642293
 IKs.xs2                  =  1.32734799999999995e-4
-ryr.Jrel_np              = -1.30048599999999992e-21
-ryr.Jrel_p               = -7.61071399999999983e-20
+ryr.Jrel_np              = - 1.30048599999999992e-21
+ryr.Jrel_p               = - 7.61071399999999983e-20
 
 [CaMK]
 CaMKa = CaMKb + CaMKt
@@ -854,49 +854,6 @@ nao = 140 [mM]
     in [mM]
     oxmeta: extracellular_sodium_concentration
 
-[initial_ions]
-nai   = 15.94867 [mM]
-    in [mM]
-nass  = 15.94922 [mM]
-    in [mM]
-ki    = 156.7131 [mM]
-    in [mM]
-kss   = 156.713 [mM]
-    in [mM]
-cass  =  6.64218699999999997e-5 [mM]
-    in [mM]
-cansr = 2.012225 [mM]
-    in [mM]
-cajsr = 2.016415 [mM]
-    in [mM]
-cai   =  8.29757599999999965e-5 [mM]
-    in [mM]
-cli   = 48.91277 [mM]
-    in [mM]
-clss  = 48.91274 [mM]
-    in [mM]
-naTot = nai + nass
-    in [mM]
-kTot = ki + kss
-    in [mM]
-caTot = cass + cansr + cajsr + cai
-    in [mM]
-clTot = cli + clss
-    in [mM]
-total = naTot + kTot + caTot + clTot
-    in [mM]
-
-[osmosis]
-caTot = intracellular_ions.cai + intracellular_ions.cajsr + intracellular_ions.cansr + intracellular_ions.cass
-clTot = intracellular_ions.cli + intracellular_ions.clss
-kTot = intracellular_ions.ki + intracellular_ions.kss
-naTot = intracellular_ions.nai + intracellular_ions.nass
-osmoOut = extracellular.cao + extracellular.clo + extracellular.ko + extracellular.nao
-X = osmoOut - initial_ions.total
-zx = (initial_ions.naTot + initial_ions.kTot - initial_ions.clTot + 2*initial_ions.caTot)/X
-vol = (X + naTot + kTot + caTot + clTot)/osmoOut
-
-
 [intracellular_ions]
 BSLmax = 1.124 [mM]
     in [mM]
@@ -951,7 +908,7 @@ trpnmax = 0.07 [mM]
     in [mM]
 
 [membrane]
-Istim = pace * i_Stim_Amplitude
+Istim = piecewise(environment.time >= i_Stim_Start and environment.time - i_Stim_Start - floor((environment.time - i_Stim_Start) / i_Stim_Period) * i_Stim_Period <= i_Stim_PulseDuration, i_Stim_Amplitude, 0 [A/F])
     in [A/F]
     oxmeta: membrane_stimulus_current
 i_Stim_Amplitude = -53 [A/F]
@@ -959,8 +916,15 @@ i_Stim_Amplitude = -53 [A/F]
     oxmeta: membrane_stimulus_current_amplitude
 i_Stim_End = 1e17 [ms]
     in [ms]
-pace = 0 bind pace
-    in [1]
+i_Stim_Period = 1000 [ms]
+    in [ms]
+    oxmeta: membrane_stimulus_current_period
+i_Stim_PulseDuration = 1 [ms]
+    in [ms]
+    oxmeta: membrane_stimulus_current_duration
+i_Stim_Start = 0 [ms]
+    in [ms]
+    oxmeta: membrane_stimulus_current_offset
 dot(v) = -(INa.INa + INaL.INaL + Ito.Ito + ICaL.ICaL + ICaL.ICaNa + ICaL.ICaK + IKr.IKr + IKs.IKs + IK1.IK1 + INaCa.INaCa_i + INaCa.INaCa_ss + INaK.INaK + INab.INab + IKb.IKb + IpCa.IpCa + ICab.ICab + ICl.IClCa + ICl.IClb + I_katp.I_katp + Istim)
     in [mV]
     oxmeta: membrane_voltage
@@ -968,6 +932,13 @@ vffrt = v * physical_constants.F * physical_constants.F / (physical_constants.R 
     in [C/mol]
 vfrt = v * physical_constants.F / (physical_constants.R * physical_constants.T)
     in [1]
+
+[osmosis]
+extra = extracellular.nao + extracellular.ko + extracellular.cao + extracellular.clo
+init_missing =  7.52253770242400321e1
+intra = intracellular_ions.nai + intracellular_ions.ki + intracellular_ions.cai + intracellular_ions.cli
+missing_conc = extra - intra
+steady_vol = (init_missing + intra) / extra
 
 [physical_constants]
 F = 96485 [C/mol]
@@ -1042,27 +1013,4 @@ tau_relp_b = btp / (1 + 0.0123 [mM] / intracellular_ions.cajsr)
 [trans_flux]
 Jtr = (intracellular_ions.cansr - intracellular_ions.cajsr) / 60 [ms]
     in [mM/ms]
-
-[[protocol]]
-# Level  Start    Length   Period   Multiplier
-1.0      0.0      1.0      1000.0   0
-
-[[script]]
-import matplotlib.pyplot as plt
-import myokit
-
-# Get model and protocol, create simulation
-m = get_model()
-p = get_protocol()
-s = myokit.Simulation(m, p)
-
-# Run simulation
-d = s.run(1000)
-
-# Display the results
-var = 'membrane.v'
-plt.figure()
-plt.plot(d.time(), d[var])
-plt.title(var)
-plt.show()
 
