@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import myokit
 import myokit.lib.plots
+import myokit.lib.guess
 
 # Declarations
 filename = 'models/difrancesco_noble_1985'
@@ -15,7 +16,7 @@ log = sim.run(5)  # Time in units of s not ms
 
 # Plot membrane voltage
 plt.figure(figsize=figsize, layout='tight')
-plt.plot(log.time(), log['membrane.V'])
+plt.plot(log.time(), log[myokit.lib.guess.membrane_potential(model).qname()])
 plt.title('AP trace')
 plt.xlabel('Time (s)')
 plt.ylabel('Voltage (mV)')
