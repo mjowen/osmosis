@@ -13,24 +13,24 @@ if 'difrancesco_noble' in filename:
     intra = [f'intracellular_{a}_concentration.{b}' for a, b in
              [('sodium', 'Nai'), ('calcium', 'Cai'), ('potassium', 'Ki')]]
     extra = ['extracellular_potassium_concentration.Kc']
-    timeunits = 1 #s
+    timeunits = 1  # s
 elif 'ToRORd' in filename:
     intra = [f'intracellular_ions.{a}' for a in ['nai', 'ki', 'cai', 'cli']]
     extra = [f'extracellular.{a}' for a in ['nao', 'ko', 'cao', 'clo']]
-    timeunits = 1000 #ms
+    timeunits = 1000  # ms
 else:
     intra = []
     extra = []
-    timeunits = 1000 #ms
+    timeunits = 1000  # ms
 
 model = myokit.load_model(f'{filename}_osmo.mmt')
 if 'difrancesco_noble' in filename:
     protocol = None  # Sino-atrial model so no pacing needed
 else:
-    protocol = myokit.pacing.blocktrain(1*timeunits, 1)
+    protocol = myokit.pacing.blocktrain(1 * timeunits, 1)
 
 sim = myokit.Simulation(model, protocol=protocol)
-log = sim.run(5*timeunits)
+log = sim.run(5 * timeunits)
 
 # Plot membrane voltage
 plt.figure(figsize=figsize, layout='tight')
@@ -61,16 +61,16 @@ plt.show()
 
 # Concentration plot
 # If any concentrations are fixed as variables (likely for the extracellular ions), they need to be added to the log so that myokit doesn't get confused trying to plot them.
-labels = intra+extra+['osmosis.missing_conc']
+labels = intra + extra + ['osmosis.missing_conc']
 for i in labels:
     if i not in log.keys():
-        log[i] = [model.get(i).value()]*len(log.time())
+        log[i] = [model.get(i).value()] * len(log.time())
 # Extracellular ions should appear as negative
 for i in extra:
-    log[i] = -1*np.array(log[i])
+    log[i] = -1 * np.array(log[i])
 labels = [i.split('.')[-1] for i in labels]
 plt.figure(figsize=figsize, layout='tight')
-myokit.lib.plots.cumulative_current(log, intra+extra+['osmosis.missing_conc'], labels=labels, line_args={'lw': 0})
+myokit.lib.plots.cumulative_current(log, intra + extra + ['osmosis.missing_conc'], labels=labels, line_args={'lw': 0})
 plt.legend()
 plt.title('Ionic Concentrations')
 plt.ylabel('Extracellular (mM) <---> Intracellular (mM)')
