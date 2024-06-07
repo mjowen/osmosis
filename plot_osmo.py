@@ -13,21 +13,24 @@ if 'difrancesco_noble' in filename:
     intra = [f'intracellular_{a}_concentration.{b}' for a, b in
              [('sodium', 'Nai'), ('calcium', 'Cai'), ('potassium', 'Ki')]]
     extra = ['extracellular_potassium_concentration.Kc']
+    timeunits = 1 #s
 elif 'ToRORd' in filename:
     intra = [f'intracellular_ions.{a}' for a in ['nai', 'ki', 'cai', 'cli']]
     extra = [f'extracellular.{a}' for a in ['nao', 'ko', 'cao', 'clo']]
+    timeunits = 1000 #ms
 else:
     intra = []
     extra = []
+    timeunits = 1000 #ms
 
 model = myokit.load_model(f'{filename}_osmo.mmt')
 if 'difrancesco_noble' in filename:
     protocol = None  # Sino-atrial model so no pacing needed
 else:
-    protocol = myokit.pacing.blocktrain(1000, 1)
+    protocol = myokit.pacing.blocktrain(1*timeunits, 1)
 
 sim = myokit.Simulation(model, protocol=protocol)
-log = sim.run(5)  # Time in units of s not ms
+log = sim.run(5*timeunits)
 
 # Plot membrane voltage
 plt.figure(figsize=figsize, layout='tight')
