@@ -60,7 +60,11 @@ plt.savefig(f'figures/{filename.split("/")[-1]}-volume.png', dpi=300)
 plt.show()
 
 # Concentration plot
+# If any concentrations are fixed as variables (likely for the extracellular ions), they need to be added to the log so that myokit doesn't get confused trying to plot them.
 labels = intra+extra+['osmosis.missing_conc']
+for i in labels:
+    if i not in log.keys():
+        log[i] = [model.get(i).value()]*len(log.time())
 labels = [i.split('.')[-1] for i in labels]
 plt.figure(figsize=figsize, layout='tight')
 myokit.lib.plots.cumulative_current(log, intra+extra+['osmosis.missing_conc'], labels=labels, line_args={'lw': 0})
