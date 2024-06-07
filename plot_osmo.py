@@ -59,11 +59,6 @@ plt.xlabel('Time (s)')
 plt.savefig(f'figures/{filename.split("/")[-1]}-volume.png', dpi=300)
 plt.show()
 
-# List of concentrations
-intra = [f'intracellular_{a}_concentration.{b}' for a, b in
-         [('sodium', 'Nai'), ('calcium', 'Cai'), ('potassium', 'Ki')]]
-extra = ['extracellular_potassium_concentration.Kc']
-
 # Concentration plot
 labels = intra+extra+['osmosis.missing_conc']
 labels = [i.split('.')[-1] for i in labels]
