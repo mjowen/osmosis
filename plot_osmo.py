@@ -8,6 +8,18 @@ import myokit.lib.guess
 filename = 'models/ToRORd_dynCl_mid'
 figsize = (6, 4)
 
+# List of concentrations
+if 'difrancesco_noble' in filename:
+    intra = [f'intracellular_{a}_concentration.{b}' for a, b in
+             [('sodium', 'Nai'), ('calcium', 'Cai'), ('potassium', 'Ki')]]
+    extra = ['extracellular_potassium_concentration.Kc']
+elif 'ToRORd' in filename:
+    intra = [f'intracellular_ions.{a}' for a in ['nai', 'ki', 'cai', 'cli']]
+    extra = [f'extracellular.{a}' for a in ['nao', 'ko', 'cao', 'clo']]
+else:
+    intra = []
+    extra = []
+
 model = myokit.load_model(f'{filename}_osmo.mmt')
 if 'difrancesco_noble' in filename:
     protocol = None  # Sino-atrial model so no pacing needed
