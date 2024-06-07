@@ -38,17 +38,21 @@ Once you have added the filename and concentrations, you can run the **plot_osmo
 The plots will be saved in the **figures** directory. 
 ### Plot 1 - AP Trace
 The first plot, labelled **ap-trace** will show the action potential trace of the model.
+
 <img alt="Image of AP Trace" height="400" src="figures/difrancesco_noble_1985-ap-trace.png" width="600"/>
 
 ### Plot 2 - Volume
 The second plot, labelled **volume** will show the volume of the cell over time. This is under the assumption that the cell has exactly the missing concentration needed to maintain its volume initially, which is then perturbed as the ionic concentrations change over time.
+
 <img alt="Image of Volume" height="400" src="figures/difrancesco_noble_1985-volume.png" width="600"/>
 
 ### Plot 3 - Missing Concentration
 The third plot, labelled **missing_conc** will show the missing concentration needed to maintain the cell's volume over time.
+
 <img alt="Image of Missing Concentration" height="400" src="figures/difrancesco_noble_1985-missing_conc.png" width="600"/>
 
 ### Plot 4 - Ionic Concentrations
 The fourth and final plot, labelled **concentrations** will show the ionic concentrations over time. The ions are separated by colour and intracellular concentrations are shown as positive and extracellular concentrations are shown as negative. 
 The missing concentration tracks that given in the third plot (concentration needed to keep the volume fixed).
+
 <img alt="Image of Concentrations" height="400" src="figures/difrancesco_noble_1985-concentrations.png" width="600"/>
