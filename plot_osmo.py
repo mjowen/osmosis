@@ -19,7 +19,7 @@ plt.plot(log.time(), log['membrane.V'])
 plt.title('AP trace')
 plt.xlabel('Time (s)')
 plt.ylabel('Voltage (mV)')
-plt.savefig('figures/ap-trace.png', dpi=300)
+plt.savefig(f'figures/{filename.split("/")[-1]}-ap-trace.png', dpi=300)
 plt.show()
 
 # Plot the steady steady missing concentration
@@ -28,7 +28,7 @@ plt.plot(log.time(), log['osmosis.missing_conc'])
 plt.title('Missing Concentration for Steady State')
 plt.ylabel('Missing  Intracellular Concentration (mM)')
 plt.xlabel('Time (s)')
-plt.savefig('figures/missing_conc.png', dpi=300)
+plt.savefig(f'figures/{filename.split("/")[-1]}-missing_conc.png', dpi=300)
 plt.show()
 
 # Plot the cell volume
@@ -37,7 +37,7 @@ plt.plot(log.time(), log['osmosis.steady_vol'])
 plt.title('Steady State Cell Volume')
 plt.ylabel('Volume')
 plt.xlabel('Time (s)')
-plt.savefig('figures/volume.png', dpi=300)
+plt.savefig(f'figures/{filename.split("/")[-1]}-volume.png', dpi=300)
 plt.show()
 
 # List of concentrations
@@ -54,5 +54,5 @@ plt.legend()
 plt.title('Ionic Concentrations')
 plt.ylabel('Extracellular (mM) <---> Intracellular (mM)')
 plt.xlabel('Time (s)')
-plt.savefig('figures/concentrations.png', dpi=300)
+plt.savefig(f'figures/{filename.split("/")[-1]}-concentrations.png', dpi=300)
 plt.show()
