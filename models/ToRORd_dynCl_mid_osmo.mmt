@@ -47,6 +47,10 @@ IKs.xs1                  = 0.2642293
 IKs.xs2                  =  1.32734799999999995e-4
 ryr.Jrel_np              = - 1.30048599999999992e-21
 ryr.Jrel_p               = - 7.61071399999999983e-20
+extracellular.nao        = 140
+extracellular.ko         = 5
+extracellular.cao        = 1.8
+extracellular.clo        = 150
 
 [CaMK]
 CaMKa = CaMKb + CaMKt
@@ -842,15 +846,15 @@ time = 0 [ms] bind time
     oxmeta: time
 
 [extracellular]
-cao = 1.8 [mM]
+dot(cao) = 0
     in [mM]
     oxmeta: extracellular_calcium_concentration
-clo = 150 [mM]
+dot(clo) = 0
     in [mM]
-ko = 5 [mM]
+dot(ko) = 0
     in [mM]
     oxmeta: extracellular_potassium_concentration
-nao = 140 [mM]
+dot(nao) = 0
     in [mM]
     oxmeta: extracellular_sodium_concentration
 

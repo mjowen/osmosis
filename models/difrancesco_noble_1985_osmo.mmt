@@ -84,6 +84,8 @@ intracellular_calcium_concentration.Ca_rel = 1
 intracellular_calcium_concentration.p      = 1
 extracellular_potassium_concentration.Kc   = 4
 intracellular_potassium_concentration.Ki   = 140
+extracellular_sodium_concentration.Nao     = 140
+extracellular_calcium_concentration.Cao    = 2
 
 [Na_Ca_exchanger]
 K_NaCa = 0.02 [nA]
@@ -110,7 +112,7 @@ time = 0 [s] bind time
     in [s]
 
 [extracellular_calcium_concentration]
-Cao = 2 [mM]
+dot(Cao) = 0
     in [mM]
 
 [extracellular_potassium_concentration]
@@ -126,7 +128,7 @@ pf = 0.7 [S/F]
     in [S/F]
 
 [extracellular_sodium_concentration]
-Nao = 140 [mM]
+dot(Nao) = 0
     in [mM]
 
 [fast_sodium_current]

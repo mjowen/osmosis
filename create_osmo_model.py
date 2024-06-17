@@ -39,16 +39,15 @@ def create_osmo_model(model, intra, extra, filename=None):
     filename : str, optional
         The filename to save the model under. If the filename is not provided, the model is not saved.
     """
+    # Convert concentrations to state variables
+    for i in intra + extra:
+        if not model.get(i).is_state():
+            model.get(i).promote(initial_value=model.get(i).value())
+            model.get(i).set_rhs(0)
+
     # Calculate initial osmolarity
     initial_intra = [model.get(i).initial_value(as_float=True) for i in intra]
-    # Extracellular may be stored as states (so initial values work) or as variables (so initial value won't work)
-    try:
-        initial_extra = [model.get(i).initial_value(as_float=True) for i in extra]
-    except Exception as e:
-        if 'Only state variables have initial values.' in str(e):
-            initial_extra = [model.get(i).value() for i in extra]
-        else:
-            raise e
+    initial_extra = [model.get(i).initial_value(as_float=True) for i in extra]
 
     initial_missing = np.sum(initial_extra) - np.sum(initial_intra)
     if initial_missing > 0:

@@ -60,11 +60,7 @@ plt.savefig(f'figures/{filename.split("/")[-1]}-volume.png', dpi=300)
 plt.show()
 
 # Concentration plot
-# If any concentrations are fixed as variables (likely for the extracellular ions), they need to be added to the log so that myokit doesn't get confused trying to plot them.
 labels = intra + extra + ['osmosis.missing_conc']
-for i in labels:
-    if i not in log.keys():
-        log[i] = [model.get(i).value()] * len(log.time())
 # Extracellular ions should appear as negative
 for i in extra:
     log[i] = -1 * np.array(log[i])
