@@ -82,16 +82,17 @@ steady_vol = intra/(extra-init_missing)
 
 
 if __name__ == '__main__':
-    filename = 'models/ToRORd_dynCl_mid'
-    if 'difrancesco_noble' in filename:
-        intra = [f'intracellular_{a}_concentration.{b}' for a, b in
-                 [('sodium', 'Nai'), ('calcium', 'Cai'), ('potassium', 'Ki')]]
-        extra = ['extracellular_potassium_concentration.Kc']
-    elif 'ToRORd' in filename:
-        intra = [f'intracellular_ions.{a}' for a in ['nai', 'ki', 'cai', 'cli']]
-        extra = [f'extracellular.{a}' for a in ['nao', 'ko', 'cao', 'clo']]
-    else:
-        intra = []
-        extra = []
-    model = convert_to_myokit(filename)
-    create_osmo_model(model, intra, extra, filename)
+    filenames = ['models/ToRORd_dynCl_mid', 'models/difrancesco_noble_1985']
+    for filename in filenames:
+        if 'difrancesco_noble' in filename:
+            intra = [f'intracellular_{a}_concentration.{b}' for a, b in
+                     [('sodium', 'Nai'), ('calcium', 'Cai'), ('potassium', 'Ki')]]
+            extra = ['extracellular_potassium_concentration.Kc']
+        elif 'ToRORd' in filename:
+            intra = [f'intracellular_ions.{a}' for a in ['nai', 'ki', 'cai', 'cli']]
+            extra = [f'extracellular.{a}' for a in ['nao', 'ko', 'cao', 'clo']]
+        else:
+            intra = []
+            extra = []
+        model = convert_to_myokit(filename)
+        create_osmo_model(model, intra, extra, filename)
