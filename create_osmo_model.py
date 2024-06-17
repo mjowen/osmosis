@@ -87,7 +87,8 @@ if __name__ == '__main__':
         if 'difrancesco_noble' in filename:
             intra = [f'intracellular_{a}_concentration.{b}' for a, b in
                      [('sodium', 'Nai'), ('calcium', 'Cai'), ('potassium', 'Ki')]]
-            extra = ['extracellular_potassium_concentration.Kc']
+            extra = ['extracellular_potassium_concentration.Kc', 'extracellular_sodium_concentration.Nao',
+                     'extracellular_calcium_concentration.Cao']
         elif 'ToRORd' in filename:
             intra = [f'intracellular_ions.{a}' for a in ['nai', 'ki', 'cai', 'cli']]
             extra = [f'extracellular.{a}' for a in ['nao', 'ko', 'cao', 'clo']]

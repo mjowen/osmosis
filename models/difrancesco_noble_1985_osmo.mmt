@@ -258,8 +258,8 @@ i_pulse = 0 [nA]
     in [nA]
 
 [osmosis]
-extra = extracellular_potassium_concentration.Kc
-init_missing = -144.00005
+extra = extracellular_potassium_concentration.Kc + extracellular_sodium_concentration.Nao + extracellular_calcium_concentration.Cao
+init_missing = - 2.00004999999998745
 intra = intracellular_sodium_concentration.Nai + intracellular_calcium_concentration.Cai + intracellular_potassium_concentration.Ki
 missing_conc = extra - intra
 steady_vol = intra / (extra - init_missing)
