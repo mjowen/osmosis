@@ -43,7 +43,7 @@ def create_osmo_model(model, intra, extra, filename=None):
     for i in intra + extra:
         if not model.get(i).is_state():
             model.get(i).promote(initial_value=model.get(i).value())
-            model.get(i).set_rhs(0)
+            model.get(i).set_rhs(f'0 [mM/{str(model.time_unit())[1:-1]}]')
 
     # Calculate initial osmolarity
     initial_intra = [model.get(i).initial_value(as_float=True) for i in intra]
