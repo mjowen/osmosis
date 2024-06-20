@@ -5,14 +5,15 @@ import myokit.lib.plots
 import myokit.lib.guess
 
 # Declarations
-filename = 'models/ToRORd_dynCl_mid'
+filename = 'models/difrancesco_noble_1985'
 figsize = (6, 4)
 
 # List of concentrations
 if 'difrancesco_noble' in filename:
     intra = [f'intracellular_{a}_concentration.{b}' for a, b in
              [('sodium', 'Nai'), ('calcium', 'Cai'), ('potassium', 'Ki')]]
-    extra = ['extracellular_potassium_concentration.Kc']
+    extra = ['extracellular_potassium_concentration.Kc', 'extracellular_sodium_concentration.Nao',
+             'extracellular_calcium_concentration.Cao']
     timeunits = 1  # s
 elif 'ToRORd' in filename:
     intra = [f'intracellular_ions.{a}' for a in ['nai', 'ki', 'cai', 'cli']]
@@ -52,15 +53,18 @@ plt.show()
 
 # Plot the cell volume
 plt.figure(figsize=figsize, layout='tight')
-plt.plot(log.time(), log['osmosis.steady_vol'])
+plt.plot(log.time(), log['osmosis.steady_volume']/log['osmosis.init_volume'])
 plt.title('Steady State Cell Volume')
-plt.ylabel('Volume')
+plt.ylabel('Volume (Normalised)')
 plt.xlabel('Time (s)')
 plt.savefig(f'figures/{filename.split("/")[-1]}-volume.png', dpi=300)
 plt.show()
 
 # Concentration plot
 labels = intra + extra + ['osmosis.missing_conc']
+# Scale intracellular ions to be in mM
+for i in intra:
+    log[i] = np.array(log[i]) / np.array(log['osmosis.steady_volume'])
 # Extracellular ions should appear as negative
 for i in extra:
     log[i] = -1 * np.array(log[i])

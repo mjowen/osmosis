@@ -4,15 +4,15 @@ name: ToRORd_dyn_chloride
 # Initial values
 membrane.v               = -91.33918
 CaMK.CaMKt               = 0.0201882
-intracellular_ions.nai   = 15.94867
+intracellular_ions.nai   =  3.18973400000000002e-8
 intracellular_ions.nass  = 15.94922
-intracellular_ions.ki    = 156.7131
+intracellular_ions.ki    =  3.13426200000000001e-7
 intracellular_ions.kss   = 156.713
 intracellular_ions.cass  =  6.64218699999999997e-5
 intracellular_ions.cansr = 2.012225
 intracellular_ions.cajsr = 2.016415
-intracellular_ions.cai   =  8.29757599999999965e-5
-intracellular_ions.cli   = 48.91277
+intracellular_ions.cai   =  1.65951519999999994e-13
+intracellular_ions.cli   =  9.78255400000000042e-8
 intracellular_ions.clss  = 48.91274
 INa.m                    =  4.61956499999999974e-4
 INa.h                    = 0.8739077
@@ -100,7 +100,7 @@ ICaNa_i = (1 - ICaL_fractionSS) * ((1 - fICaLp) * PCaNa * PhiCaNa_i * d * (f * (
     in [A/F]
 ICaNa_ss = ICaL_fractionSS * ((1 - fICaLp) * PCaNa * PhiCaNa_ss * d * (f * (1 - nca_ss) + jca * fca * nca_ss) + fICaLp * PCaNap * PhiCaNa_ss * d * (fp * (1 - nca_ss) + jca * fcap * nca_ss))
     in [A/F]
-Ii = 0.5 * (intracellular_ions.nai + intracellular_ions.ki + intracellular_ions.cli + 4 * intracellular_ions.cai) / 1000 [mM]
+Ii = 0.5 * (intracellular_ions.nai / osmosis.steady_volume + intracellular_ions.ki / osmosis.steady_volume + intracellular_ions.cli / osmosis.steady_volume + 4 * (intracellular_ions.cai / osmosis.steady_volume)) / 1000 [mM]
     in [1]
 Io = 0.5 * (extracellular.nao + extracellular.ko + extracellular.clo + 4 * extracellular.cao) / 1000 [mM]
     in [1]
@@ -123,19 +123,19 @@ PCa_b =  8.37570000000000046e-5
     oxmeta: membrane_L_type_calcium_current_conductance
 PCap = 1.1 * PCa
     in [1]
-PhiCaK_i = 1 * membrane.vffrt * (gamma_ki * intracellular_ions.ki * exp(1 * membrane.vfrt) - gamma_ko * extracellular.ko) / (exp(1 * membrane.vfrt) - 1)
+PhiCaK_i = 1 * membrane.vffrt * (gamma_ki * (intracellular_ions.ki / osmosis.steady_volume) * exp(1 * membrane.vfrt) - gamma_ko * extracellular.ko) / (exp(1 * membrane.vfrt) - 1)
     in [1]
 PhiCaK_ss = 1 * membrane.vffrt * (gamma_kss * intracellular_ions.kss * exp(1 * membrane.vfrt) - gamma_ko * extracellular.ko) / (exp(1 * membrane.vfrt) - 1)
     in [1]
-PhiCaL_i = 4 * membrane.vffrt * (gamma_cai * intracellular_ions.cai * exp(2 * membrane.vfrt) - gamma_cao * extracellular.cao) / (exp(2 * membrane.vfrt) - 1)
+PhiCaL_i = 4 * membrane.vffrt * (gamma_cai * (intracellular_ions.cai / osmosis.steady_volume) * exp(2 * membrane.vfrt) - gamma_cao * extracellular.cao) / (exp(2 * membrane.vfrt) - 1)
     in [1]
 PhiCaL_ss = 4 * membrane.vffrt * (gamma_cass * intracellular_ions.cass * exp(2 * membrane.vfrt) - gamma_cao * extracellular.cao) / (exp(2 * membrane.vfrt) - 1)
     in [1]
-PhiCaNa_i = 1 * membrane.vffrt * (gamma_nai * intracellular_ions.nai * exp(1 * membrane.vfrt) - gamma_nao * extracellular.nao) / (exp(1 * membrane.vfrt) - 1)
+PhiCaNa_i = 1 * membrane.vffrt * (gamma_nai * (intracellular_ions.nai / osmosis.steady_volume) * exp(1 * membrane.vfrt) - gamma_nao * extracellular.nao) / (exp(1 * membrane.vfrt) - 1)
     in [1]
 PhiCaNa_ss = 1 * membrane.vffrt * (gamma_nass * intracellular_ions.nass * exp(1 * membrane.vfrt) - gamma_nao * extracellular.nao) / (exp(1 * membrane.vfrt) - 1)
     in [1]
-anca_i = 1 / (k2n / km2n + (1 + Kmn / intracellular_ions.cai)^4)
+anca_i = 1 / (k2n / km2n + (1 + Kmn / (intracellular_ions.cai / osmosis.steady_volume))^4)
     in [1]
 anca_ss = 1 / (k2n / km2n + (1 + Kmn / intracellular_ions.cass)^4)
     in [1]
@@ -225,7 +225,7 @@ vShift = 0 [mV]
     in [mV]
 
 [ICab]
-ICab = PCab * 4 * membrane.vffrt * (ICaL.gamma_cai * intracellular_ions.cai * exp(2 * membrane.vfrt) - ICaL.gamma_cao * extracellular.cao) / (exp(2 * membrane.vfrt) - 1)
+ICab = PCab * 4 * membrane.vffrt * (ICaL.gamma_cai * (intracellular_ions.cai / osmosis.steady_volume) * exp(2 * membrane.vfrt) - ICaL.gamma_cao * extracellular.cao) / (exp(2 * membrane.vfrt) - 1)
     in [A/F]
 PCab =  5.91940000000000005e-8 [mS/uF]
     in [mS/uF]
@@ -241,7 +241,7 @@ IClCa = IClCa_junc + IClCa_sl
     in [A/F]
 IClCa_junc = Fjunc * GClCa / (1 + KdClCa / intracellular_ions.cass) * (membrane.v - reversal_potentials.EClss)
     in [A/F]
-IClCa_sl = (1 - Fjunc) * GClCa / (1 + KdClCa / intracellular_ions.cai) * (membrane.v - reversal_potentials.ECl)
+IClCa_sl = (1 - Fjunc) * GClCa / (1 + KdClCa / (intracellular_ions.cai / osmosis.steady_volume)) * (membrane.v - reversal_potentials.ECl)
     in [A/F]
 IClb = GClb * (membrane.v - reversal_potentials.ECl)
     in [A/F]
@@ -323,7 +323,7 @@ GKs_b = 0.0011 [mS/uF]
 IKs = GKs * KsCa * xs1 * xs2 * (membrane.v - reversal_potentials.EKs)
     in [A/F]
     oxmeta: membrane_slow_delayed_rectifier_potassium_current
-KsCa = 1 + 0.6 / (1 + (3.8e-5 [mM] / intracellular_ions.cai)^1.4)
+KsCa = 1 + 0.6 / (1 + (3.8e-5 [mM] / (intracellular_ions.cai / osmosis.steady_volume))^1.4)
     in [1]
 txs1 = 817.3 [ms] + 1 [ms] / (0.0002326 * exp((membrane.v + 48.28 [mV]) / 17.8 [mV]) + 0.001292 * exp(-(membrane.v + 210 [mV]) / 230 [mV]))
     in [ms]
@@ -420,7 +420,7 @@ JncxNa_ss = 3 * (E4_ss * k7_ss - E1_ss * k8_ss) + E3_ss * k4pp_ss - E2_ss * k3pp
     in [mM/ms]
 KmCaAct = 0.00015 [mM]
     in [mM]
-allo_i = 1 / (1 + (KmCaAct / intracellular_ions.cai)^2)
+allo_i = 1 / (1 + (KmCaAct / (intracellular_ions.cai / osmosis.steady_volume))^2)
     in [1]
 allo_ss = 1 / (1 + (KmCaAct / intracellular_ions.cass)^2)
     in [1]
@@ -436,11 +436,11 @@ h12_i = 1 / h10_i
     in [1]
 h12_ss = 1 / h10_ss
     in [1]
-h1_i = 1 + intracellular_ions.nai / kna3 * (1 + hna)
+h1_i = 1 + intracellular_ions.nai / osmosis.steady_volume / kna3 * (1 + hna)
     in [1]
 h1_ss = 1 + intracellular_ions.nass / kna3 * (1 + hna)
     in [1]
-h2_i = intracellular_ions.nai * hna / (kna3 * h1_i)
+h2_i = intracellular_ions.nai / osmosis.steady_volume * hna / (kna3 * h1_i)
     in [1]
 h2_ss = intracellular_ions.nass * hna / (kna3 * h1_ss)
     in [1]
@@ -448,11 +448,11 @@ h3_i = 1 / h1_i
     in [1]
 h3_ss = 1 / h1_ss
     in [1]
-h4_i = 1 + intracellular_ions.nai / kna1 * (1 + intracellular_ions.nai / kna2)
+h4_i = 1 + intracellular_ions.nai / osmosis.steady_volume / kna1 * (1 + intracellular_ions.nai / osmosis.steady_volume / kna2)
     in [1]
 h4_ss = 1 + intracellular_ions.nass / kna1 * (1 + intracellular_ions.nass / kna2)
     in [1]
-h5_i = intracellular_ions.nai * intracellular_ions.nai / (h4_i * kna1 * kna2)
+h5_i = intracellular_ions.nai / osmosis.steady_volume * (intracellular_ions.nai / osmosis.steady_volume) / (h4_i * kna1 * kna2)
     in [1]
 h5_ss = intracellular_ions.nass * intracellular_ions.nass / (h4_ss * kna1 * kna2)
     in [1]
@@ -512,7 +512,7 @@ k5_i = kcaoff
     in [1]
 k5_ss = kcaoff
     in [1]
-k6_i = h6_i * intracellular_ions.cai * kcaon
+k6_i = h6_i * (intracellular_ions.cai / osmosis.steady_volume) * kcaon
     in [1]
 k6_ss = h6_ss * intracellular_ions.cass * kcaon
     in [1]
@@ -605,14 +605,14 @@ MgADP = 0.05 [mM]
     in [mM]
 MgATP = 9.8 [mM]
     in [mM]
-P = eP / (1 + H / Khp + intracellular_ions.nai / Knap + intracellular_ions.ki / Kxkur)
+P = eP / (1 + H / Khp + intracellular_ions.nai / osmosis.steady_volume / Knap + intracellular_ions.ki / osmosis.steady_volume / Kxkur)
     in [1]
 Pnak = piecewise(environment.celltype == 1, Pnak_b * 0.9, environment.celltype == 2, Pnak_b * 0.7, Pnak_b)
     in [mS/uF]
 Pnak_b = 15.4509 [mS/uF]
     in [mS/uF]
     oxmeta: membrane_sodium_potassium_pump_current_permeability
-a1 = k1p * (intracellular_ions.nai / Knai)^3 / ((1 + intracellular_ions.nai / Knai)^3 + (1 + intracellular_ions.ki / Kki)^2 - 1)
+a1 = k1p * (intracellular_ions.nai / osmosis.steady_volume / Knai)^3 / ((1 + intracellular_ions.nai / osmosis.steady_volume / Knai)^3 + (1 + intracellular_ions.ki / osmosis.steady_volume / Kki)^2 - 1)
     in [1]
 a2 = k2p
     in [1]
@@ -626,7 +626,7 @@ b2 = k2m * (extracellular.nao / Knao)^3 / ((1 + extracellular.nao / Knao)^3 + (1
     in [1]
 b3 = k3m * P * H / (1 + MgATP / Kmgatp)
     in [1]
-b4 = k4m * (intracellular_ions.ki / Kki)^2 / ((1 + intracellular_ions.nai / Knai)^3 + (1 + intracellular_ions.ki / Kki)^2 - 1)
+b4 = k4m * (intracellular_ions.ki / osmosis.steady_volume / Kki)^2 / ((1 + intracellular_ions.nai / osmosis.steady_volume / Knai)^3 + (1 + intracellular_ions.ki / osmosis.steady_volume / Kki)^2 - 1)
     in [1]
 delta = -0.155 [mV]
     in [mV]
@@ -688,7 +688,7 @@ tmL = 0.1292 [ms] * exp(-((membrane.v + 45.79 [mV]) / 15.54 [mV])^2) + 0.06487 [
     in [ms]
 
 [INab]
-INab = PNab * membrane.vffrt * (intracellular_ions.nai * exp(membrane.vfrt) - extracellular.nao) / (exp(membrane.vfrt) - 1)
+INab = PNab * membrane.vffrt * (intracellular_ions.nai / osmosis.steady_volume * exp(membrane.vfrt) - extracellular.nao) / (exp(membrane.vfrt) - 1)
     in [A/F]
 PNab =  1.92389999999999994e-9 [mS/uF]
     in [mS/uF]
@@ -716,7 +716,7 @@ gkatp = 4.3195 [mS/uF]
 [IpCa]
 GpCa = 0.0005 [mS/uF]
     in [mS/uF]
-IpCa = GpCa * intracellular_ions.cai / (KmCap + intracellular_ions.cai)
+IpCa = GpCa * (intracellular_ions.cai / osmosis.steady_volume) / (KmCap + intracellular_ions.cai / osmosis.steady_volume)
     in [A/F]
     oxmeta: membrane_calcium_pump_current
 KmCap = 0.0005 [mM]
@@ -791,9 +791,9 @@ Jup = Jup_b * ((1 - fJupp) * Jupnp + fJupp * Jupp - Jleak)
 Jup_b = 1
     in [1]
     oxmeta: SR_uptake_current_max
-Jupnp = upScale * 0.005425 * intracellular_ions.cai / (intracellular_ions.cai + 0.00092 [mM])
+Jupnp = upScale * 0.005425 * (intracellular_ions.cai / osmosis.steady_volume) / (intracellular_ions.cai / osmosis.steady_volume + 0.00092 [mM])
     in [mM/ms]
-Jupp = upScale * 2.75 * 0.005425 * intracellular_ions.cai / (intracellular_ions.cai + 0.00092 [mM] - 0.00017 [mM])
+Jupp = upScale * 2.75 * 0.005425 * (intracellular_ions.cai / osmosis.steady_volume) / (intracellular_ions.cai / osmosis.steady_volume + 0.00092 [mM] - 0.00017 [mM])
     in [mM/ms]
 fJupp = 1 / (1 + CaMK.KmCaMK / CaMK.CaMKa)
     in [1]
@@ -821,13 +821,13 @@ vss = 0.02 * vcell
     in [uL]
 
 [diff]
-Jdiff = (intracellular_ions.cass - intracellular_ions.cai) / tauCa
+Jdiff = (intracellular_ions.cass - intracellular_ions.cai / osmosis.steady_volume) / tauCa
     in [mM/ms]
-JdiffCl = (intracellular_ions.clss - intracellular_ions.cli) / tauNa
+JdiffCl = (intracellular_ions.clss - intracellular_ions.cli / osmosis.steady_volume) / tauNa
     in [mM/ms]
-JdiffK = (intracellular_ions.kss - intracellular_ions.ki) / tauK
+JdiffK = (intracellular_ions.kss - intracellular_ions.ki / osmosis.steady_volume) / tauK
     in [mM/ms]
-JdiffNa = (intracellular_ions.nass - intracellular_ions.nai) / tauNa
+JdiffNa = (intracellular_ions.nass - intracellular_ions.nai / osmosis.steady_volume) / tauNa
     in [mM/ms]
 tauCa = 0.2 [ms]
     in [ms]
@@ -846,15 +846,15 @@ time = 0 [ms] bind time
     oxmeta: time
 
 [extracellular]
-dot(cao) = 0
+dot(cao) = 0 [mM/ms]
     in [mM]
     oxmeta: extracellular_calcium_concentration
-dot(clo) = 0
+dot(clo) = 0 [mM/ms]
     in [mM]
-dot(ko) = 0
+dot(ko) = 0 [mM/ms]
     in [mM]
     oxmeta: extracellular_potassium_concentration
-dot(nao) = 0
+dot(nao) = 0 [mM/ms]
     in [mM]
     oxmeta: extracellular_sodium_concentration
 
@@ -863,7 +863,7 @@ BSLmax = 1.124 [mM]
     in [mM]
 BSRmax = 0.047 [mM]
     in [mM]
-Bcai = 1 / (1 + cmdnmax * kmcmdn / (kmcmdn + cai)^2 + trpnmax * kmtrpn / (kmtrpn + cai)^2)
+Bcai = 1 / (1 + cmdnmax * kmcmdn / (kmcmdn + cai / osmosis.steady_volume)^2 + trpnmax * kmtrpn / (kmtrpn + cai / osmosis.steady_volume)^2)
     in [1]
 Bcajsr = 1 / (1 + csqnmax * kmcsqn / (kmcsqn + cajsr)^2)
     in [1]
@@ -873,8 +873,8 @@ KmBSL = 0.0087 [mM]
     in [mM]
 KmBSR = 0.00087 [mM]
     in [mM]
-dot(cai) = Bcai * (-(ICaL.ICaL_i + IpCa.IpCa + ICab.ICab - 2 * INaCa.INaCa_i) * cell_geometry.Acap / (2 * physical_constants.F * cell_geometry.vmyo) - SERCA.Jup * cell_geometry.vnsr / cell_geometry.vmyo + diff.Jdiff * cell_geometry.vss / cell_geometry.vmyo)
-    in [mM]
+dot(cai) = Bcai * (-(ICaL.ICaL_i + IpCa.IpCa + ICab.ICab - 2 * INaCa.INaCa_i) * cell_geometry.Acap / (2 * physical_constants.F * 1) - SERCA.Jup * cell_geometry.vnsr / 1 + diff.Jdiff * cell_geometry.vss / 1)
+    in [mmol]
     oxmeta: cytosolic_calcium_concentration
 dot(cajsr) = Bcajsr * (trans_flux.Jtr - ryr.Jrel)
     in [mM]
@@ -882,8 +882,8 @@ dot(cansr) = SERCA.Jup - trans_flux.Jtr * cell_geometry.vjsr / cell_geometry.vns
     in [mM]
 dot(cass) = Bcass * (-(ICaL.ICaL_ss - 2 * INaCa.INaCa_ss) * cell_geometry.Acap / (2 * physical_constants.F * cell_geometry.vss) + ryr.Jrel * cell_geometry.vjsr / cell_geometry.vss - diff.Jdiff)
     in [mM]
-dot(cli) = (ICl.IClb + ICl.IClCa_sl) * cell_geometry.Acap / (physical_constants.F * cell_geometry.vmyo) + diff.JdiffCl * cell_geometry.vss / cell_geometry.vmyo
-    in [mM]
+dot(cli) = (ICl.IClb + ICl.IClCa_sl) * cell_geometry.Acap / (physical_constants.F * 1) + diff.JdiffCl * cell_geometry.vss / 1
+    in [mmol]
 dot(clss) = ICl.IClCa_junc * cell_geometry.Acap / (physical_constants.F * cell_geometry.vss) - diff.JdiffCl
     in [mM]
 cmdnmax = piecewise(environment.celltype == 1, cmdnmax_b * 1.3, cmdnmax_b)
@@ -892,8 +892,8 @@ cmdnmax_b = 0.05 [mM]
     in [mM]
 csqnmax = 10 [mM]
     in [mM]
-dot(ki) = -(Ito.Ito + IKr.IKr + IKs.IKs + IK1.IK1 + IKb.IKb + I_katp.I_katp + membrane.Istim - 2 * INaK.INaK + ICaL.ICaK_i) * cell_geometry.Acap / (physical_constants.F * cell_geometry.vmyo) + diff.JdiffK * cell_geometry.vss / cell_geometry.vmyo
-    in [mM]
+dot(ki) = -(Ito.Ito + IKr.IKr + IKs.IKs + IK1.IK1 + IKb.IKb + I_katp.I_katp + membrane.Istim - 2 * INaK.INaK + ICaL.ICaK_i) * cell_geometry.Acap / (physical_constants.F * 1) + diff.JdiffK * cell_geometry.vss / 1
+    in [mmol]
     oxmeta: cytosolic_potassium_concentration
 kmcmdn = 0.00238 [mM]
     in [mM]
@@ -903,8 +903,8 @@ kmtrpn = 0.0005 [mM]
     in [mM]
 dot(kss) = -ICaL.ICaK_ss * cell_geometry.Acap / (physical_constants.F * cell_geometry.vss) - diff.JdiffK
     in [mM]
-dot(nai) = -(INa.INa + INaL.INaL + 3 * INaCa.INaCa_i + ICaL.ICaNa_i + 3 * INaK.INaK + INab.INab) * cell_geometry.Acap / (physical_constants.F * cell_geometry.vmyo) + diff.JdiffNa * cell_geometry.vss / cell_geometry.vmyo
-    in [mM]
+dot(nai) = -(INa.INa + INaL.INaL + 3 * INaCa.INaCa_i + ICaL.ICaNa_i + 3 * INaK.INaK + INab.INab) * cell_geometry.Acap / (physical_constants.F * 1) + diff.JdiffNa * cell_geometry.vss / 1
+    in [mmol]
     oxmeta: cytosolic_sodium_concentration
 dot(nass) = -(ICaL.ICaNa_ss + 3 * INaCa.INaCa_ss) * cell_geometry.Acap / (physical_constants.F * cell_geometry.vss) - diff.JdiffNa
     in [mM]
@@ -939,10 +939,17 @@ vfrt = v * physical_constants.F / (physical_constants.R * physical_constants.T)
 
 [osmosis]
 extra = extracellular.nao + extracellular.ko + extracellular.cao + extracellular.clo
-init_missing =  7.52253770242400321e1
+    in [mM]
+init_missing =  7.52253770242400321e1 [mM]
+    in [mM]
+init_volume = 2e-9 [L]
+    in [L]
 intra = intracellular_ions.nai + intracellular_ions.ki + intracellular_ions.cai + intracellular_ions.cli
-missing_conc = extra - intra
-steady_vol = (init_missing + intra) / extra
+    in [mmol]
+missing_conc = extra - intra / steady_volume
+    in [mM]
+steady_volume = (init_missing * init_volume + intra) / extra
+    in [L]
 
 [physical_constants]
 F = 96485 [C/mol]
@@ -961,15 +968,15 @@ zna = 1
     in [1]
 
 [reversal_potentials]
-ECl = physical_constants.R * physical_constants.T / (physical_constants.zcl * physical_constants.F) * log(extracellular.clo / intracellular_ions.cli)
+ECl = physical_constants.R * physical_constants.T / (physical_constants.zcl * physical_constants.F) * log(extracellular.clo / (intracellular_ions.cli / osmosis.steady_volume))
     in [mV]
 EClss = physical_constants.R * physical_constants.T / (physical_constants.zcl * physical_constants.F) * log(extracellular.clo / intracellular_ions.clss)
     in [mV]
-EK = physical_constants.R * physical_constants.T / (physical_constants.zk * physical_constants.F) * log(extracellular.ko / intracellular_ions.ki)
+EK = physical_constants.R * physical_constants.T / (physical_constants.zk * physical_constants.F) * log(extracellular.ko / (intracellular_ions.ki / osmosis.steady_volume))
     in [mV]
-EKs = physical_constants.R * physical_constants.T / (physical_constants.zk * physical_constants.F) * log((extracellular.ko + PKNa * extracellular.nao) / (intracellular_ions.ki + PKNa * intracellular_ions.nai))
+EKs = physical_constants.R * physical_constants.T / (physical_constants.zk * physical_constants.F) * log((extracellular.ko + PKNa * extracellular.nao) / (intracellular_ions.ki / osmosis.steady_volume + PKNa * (intracellular_ions.nai / osmosis.steady_volume)))
     in [mV]
-ENa = physical_constants.R * physical_constants.T / (physical_constants.zna * physical_constants.F) * log(extracellular.nao / intracellular_ions.nai)
+ENa = physical_constants.R * physical_constants.T / (physical_constants.zna * physical_constants.F) * log(extracellular.nao / (intracellular_ions.nai / osmosis.steady_volume))
     in [mV]
 PKNa = 0.01833
     in [1]
